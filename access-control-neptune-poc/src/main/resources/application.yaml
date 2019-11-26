@@ -1,0 +1,4 @@
+neptunning:
+  url: neptune-lb-1134375387.us-east-1.elb.amazonaws.com
+  port: 80
+  enableSsl: false
