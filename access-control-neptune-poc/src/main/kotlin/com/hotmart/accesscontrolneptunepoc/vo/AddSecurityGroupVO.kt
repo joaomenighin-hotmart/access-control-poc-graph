@@ -1,3 +1,3 @@
 package com.hotmart.accesscontrolneptunepoc.vo
 
-data class AddSecurityGroupVO(val securityGroupId: String, val securityGroupParentId: String)
+data class AddSecurityGroupVO(val toGiveSecurityGroupId: String, val securityGroupId: String)

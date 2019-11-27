@@ -41,7 +41,7 @@ class SecurityGroupsController(val graphService: GraphService) {
     @PostMapping("/add-permission")
     fun addPermission(@RequestBody vo: AddPermissionVO): String {
         val g = graphService.g
-        val w = g.V(vo.securityGroupId)
+        val w = g.V(vo.toGivePermissionId)
                 .addE("has-permission")
                 .to(g.V(vo.permissionId))
                 .next()
@@ -52,9 +52,9 @@ class SecurityGroupsController(val graphService: GraphService) {
     @PostMapping("/add-security-group")
     fun addSecurityGroup(@RequestBody vo: AddSecurityGroupVO): String {
         val g = graphService.g
-        val w = g.V(vo.securityGroupId)
+        val w = g.V(vo.toGiveSecurityGroupId)
                 .addE("has-parent")
-                .to(g.V(vo.securityGroupParentId))
+                .to(g.V(vo.securityGroupId))
                 .next()
 
         return "Security group added. Edge-result: ${w.id()}"
