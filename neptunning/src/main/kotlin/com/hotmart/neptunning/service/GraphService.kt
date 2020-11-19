@@ -5,8 +5,11 @@ import com.hotmart.neptunning.annotation.Property
 import com.hotmart.neptunning.annotation.UniqueKey
 import com.hotmart.neptunning.extension.ofType
 import com.hotmart.neptunning.extension.toListMapping
+import org.apache.tinkerpop.gremlin.driver.Client
+import org.apache.tinkerpop.gremlin.driver.SigV4WebSocketChannelizer
 import org.apache.tinkerpop.gremlin.driver.Cluster
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection
+import org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV3d0
 import org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
@@ -40,13 +43,17 @@ class GraphService {
     val g: GraphTraversalSource
         get() {
             if (_g == null || _cluster?.isClosed == true || _cluster?.isClosing == true) {
-                val builder = Cluster.build()
-                    .addContactPoint(url)
-                    .port(port)
-                    .enableSsl(false)
-
-                _cluster = builder.create()
-                _g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(_cluster));
+                var cluster: Cluster
+                val clusterBuilder = Cluster.build()
+                clusterBuilder.addContactPoint(url)
+                clusterBuilder.port(port)
+                clusterBuilder.channelizer(SigV4WebSocketChannelizer::class.java)
+                clusterBuilder.enableSsl(ssl)
+                clusterBuilder.serializer(GraphSONMessageSerializerV3d0())
+                cluster = clusterBuilder.create()
+                val client = cluster.connect<Client>()
+                _g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(client))
+                //_g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(_cluster));
             }
 
             return _g!!

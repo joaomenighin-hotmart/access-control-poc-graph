@@ -1,4 +1,4 @@
 neptunning:
-  url: neptune-lb-1134375387.us-east-1.elb.amazonaws.com
-  port: 80
-  enableSsl: false
+  url: acl-graph-db.cluster-ck1h5ksgzpiq.us-east-1.neptune.amazonaws.com
+  port: 8182
+  enableSsl: true

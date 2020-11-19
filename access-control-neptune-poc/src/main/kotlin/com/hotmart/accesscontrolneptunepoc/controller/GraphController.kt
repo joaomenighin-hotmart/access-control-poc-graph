@@ -8,7 +8,7 @@ import com.hotmart.accesscontrolneptunepoc.vo.AddSecurityGroupVO
 import com.hotmart.neptunning.service.GraphService
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.`__`.*
 import org.apache.tinkerpop.gremlin.structure.Element
-import org.omg.CORBA.NO_PERMISSION
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -94,7 +94,7 @@ class GraphController {
 
     @GetMapping("/get-graph")
     fun getGraph(): Any {
-        return mapOf(
+        var map = mapOf(
                 "nodes" to graphService.g.V()
                         .project<Any>("id", "label", "group")
                         .by(GremlinT.id)
@@ -110,12 +110,14 @@ class GraphController {
                         .by(GremlinT.label)
                         .toList(),
                 "edges" to graphService.g.E()
-                        .project<Any>("id","from","to")
+                        .project<Any>("id","from", "label", "to")
                         .by(GremlinT.id)
                         .by(outV().id())
+                        .by(GremlinT.label)
                         .by(inV().id())
                         .toList()
         )
+        return map
     }
 
     @PostMapping("/clear-graph")

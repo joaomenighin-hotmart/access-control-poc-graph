@@ -120,8 +120,20 @@ export default {
                 nodes: {
                     shape: 'dot'
                 },
+
                 edges: {
-                    arrows: 'to'
+                    arrows: 'to',
+                    smooth: {
+                        forceDirection: "none",
+                        roundness: 0.55
+                        }
+                },
+                physics: {
+                    "barnesHut": {
+                    "centralGravity": 0.15,
+                    "springLength": 285
+                    },
+                    "minVelocity": 0.75
                 },
                 groups: {
                     Permission: { 
