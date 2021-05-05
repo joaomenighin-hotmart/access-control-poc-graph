@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.InvalidClassException
 import java.security.InvalidKeyException
+import javax.annotation.PostConstruct
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
@@ -42,22 +43,35 @@ class GraphService {
     private var _cluster: Cluster? = null
     val g: GraphTraversalSource
         get() {
-            if (_g == null || _cluster?.isClosed == true || _cluster?.isClosing == true) {
-                var cluster: Cluster
-                val clusterBuilder = Cluster.build()
-                clusterBuilder.addContactPoint(url)
-                clusterBuilder.port(port)
-                clusterBuilder.channelizer(SigV4WebSocketChannelizer::class.java)
-                clusterBuilder.enableSsl(ssl)
-                clusterBuilder.serializer(GraphSONMessageSerializerV3d0())
-                cluster = clusterBuilder.create()
-                val client = cluster.connect<Client>()
-                _g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(client))
-                //_g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(_cluster));
-            }
+            var cluster: Cluster
+            val clusterBuilder = Cluster.build()
+            clusterBuilder.addContactPoint(url)
+            clusterBuilder.port(port)
+            clusterBuilder.channelizer(SigV4WebSocketChannelizer::class.java)
+            clusterBuilder.enableSsl(ssl)
+            clusterBuilder.serializer(GraphSONMessageSerializerV3d0())
+            cluster = clusterBuilder.create()
+            val client = cluster.connect<Client>()
+            return AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(client))
 
-            return _g!!
+
+//            if (_g == null || _cluster?.isClosed == true || _cluster?.isClosing == true) {
+//                var cluster: Cluster
+//                val clusterBuilder = Cluster.build()
+//                clusterBuilder.addContactPoint(url)
+//                clusterBuilder.port(port)
+//                clusterBuilder.channelizer(SigV4WebSocketChannelizer::class.java)
+//                clusterBuilder.enableSsl(ssl)
+//                clusterBuilder.serializer(GraphSONMessageSerializerV3d0())
+//                cluster = clusterBuilder.create()
+//                val client = cluster.connect<Client>()
+//                _g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(client))
+//                //_g = AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(_cluster));
+//            }
+
+            //return _g!!
         }
+
 
 
     /**

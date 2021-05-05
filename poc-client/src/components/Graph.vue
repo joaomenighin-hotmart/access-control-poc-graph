@@ -164,7 +164,7 @@ export default {
     methods: {
         loadGraph() {
             this.graphMessage = 'Loading graph...'
-            axios.get(`http://localhost:8080/graph/get-graph`)
+            axios.get(`http://localhost:9090/graph/get-graph`)
                 .then(response => {
                     this.nodes = response.data.nodes.map(n => ({
                         ...n,
